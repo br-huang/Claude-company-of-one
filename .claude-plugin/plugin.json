@@ -1,0 +1,59 @@
+{
+  "name": "claude-company-of-one",
+  "version": "0.1.0",
+  "description": "Claude 一人公司 — Enterprise-grade agent pipelines for solo developers",
+  "author": {
+    "name": "Brian Rong"
+  },
+  "license": "MIT",
+  "keywords": [
+    "pipeline",
+    "agents",
+    "tdd",
+    "code-review",
+    "enterprise-workflow",
+    "solo-developer"
+  ],
+  "commands": [
+    "commands/develop.md",
+    "commands/debug.md",
+    "commands/refactor.md",
+    "commands/review.md",
+    "commands/plan.md",
+    "commands/learn.md"
+  ],
+  "agents": [
+    "agents/product-owner.md",
+    "agents/architect.md",
+    "agents/developer.md",
+    "agents/qa.md",
+    "agents/reviewer.md",
+    "agents/debugger.md",
+    "agents/devops.md"
+  ],
+  "skills": "skills",
+  "hooks": "hooks/hooks.json",
+  "userConfig": {
+    "strictness": {
+      "type": "string",
+      "enum": ["strict", "balanced", "fast"],
+      "default": "balanced",
+      "description": "Pipeline strictness: strict = all gates enforced, balanced = smart gates, fast = minimal gates"
+    },
+    "defaultBranch": {
+      "type": "string",
+      "default": "main",
+      "description": "Default branch for merge targets"
+    },
+    "language": {
+      "type": "string",
+      "default": "auto",
+      "description": "Primary language for language-specific rules (auto-detected if 'auto')"
+    },
+    "specsDir": {
+      "type": "string",
+      "default": "docs/specs",
+      "description": "Directory for pipeline artifacts (REQUIREMENTS.md, DESIGN.md, etc.)"
+    }
+  }
+}
