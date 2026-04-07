@@ -5,6 +5,26 @@ All notable changes to Claude 一人公司 will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-04-07
+
+### Added
+- **Task sizing** — orchestrator now assesses complexity (Small/Medium/Large) before starting any pipeline
+  - Small: no docs, no branch, no TaskCreate — just TDD and commit (<2 min)
+  - Medium: 4-step lightweight flow with inline plan, no standalone docs (5-10 min)
+  - Large: full pipeline with specs directory, complete docs, and Mermaid diagrams (unchanged)
+- **Medium pipeline reference** (`pipeline-medium.md`) — compact 4-stage flow: Brief Plan → Implement → Test & Review → Merge
+
+### Changed
+- Session-start hook rewritten with task sizing as CRITICAL RULES (not buried in references)
+- TaskCreate instructions moved from reference files to session-start context for reliability
+- Explicit "IMMEDIATELY proceed after gate approval" instruction to prevent stalling
+- Small tasks no longer trigger any pipeline overhead
+- Medium tasks use inline notes instead of standalone REQUIREMENTS.md/DESIGN.md/PLAN.md
+
+### Fixed
+- TODO List (TaskCreate) not activating — instructions were buried in reference files, now in session-start hook
+- Pipeline stalling after gate approval — user had to manually prompt next step
+
 ## [0.3.0] - 2026-04-07
 
 ### Added
