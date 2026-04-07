@@ -1,6 +1,5 @@
 {
   "name": "claude-company-of-one",
-  "description": "Claude for solopreneur — Enterprise-grade agent pipelines for solo developers",
   "owner": {
     "name": "Brian Huang",
     "email": "ronggg27825@gmail.com"
@@ -9,7 +8,7 @@
     {
       "name": "claude-company-of-one",
       "description": "Claude for solopreneur — Enterprise-grade agent pipelines for solo developers",
-      "version": "1.0.0",
+      "version": "0.2.0",
       "source": "./",
       "author": {
         "name": "Brian Huang",
