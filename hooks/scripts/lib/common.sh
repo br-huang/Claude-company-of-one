@@ -53,7 +53,9 @@ company_of_one_plugin_root() {
     return
   fi
 
-  dirname "$(dirname "$(dirname "$0")")"
+  local common_dir
+  common_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  dirname "$(dirname "$(dirname "$common_dir")")"
 }
 
 company_of_one_default_data_dir() {
