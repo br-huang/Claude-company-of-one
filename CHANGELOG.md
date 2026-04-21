@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] — 2026-04-21
+
+### Changed (breaking)
+
+- Collapsed to **1 agent (`reviewer`), 4 commands (`/think`, `/dev`, `/review`,
+  `/debug`), 17 skills**. All commands require an explicit parameter — no
+  inference or smart routing. Task sizing (S/M/L) removed. See
+  `docs/projects/claude-company-of-one/adr/001-v3-command-and-context-model.md`.
+- Context contract is fixed: `MEMORY.md → read-brief → BRIEF.md → skills`.
+  Skills never read MEMORY directly; mid-step skills never re-read
+  REQUIREMENTS / DESIGN / TODO from disk.
+- `reviewer` runs with fresh context and reads ONLY `REVIEW_INPUT.md` plus
+  artifacts it explicitly references — no `BRIEF.md`, no chat history.
+- Deterministic shell scripts replace the v2 pipeline state machine
+  (`brief-manager.sh`, `docs-check.sh`, `diff-evidence.sh`, `review-input.sh`,
+  `spec-conformance-check.sh`).
+- Specs and ADRs live in `docs/projects/<project>/` in the monorepo; plugin
+  data hosts only working briefs.
+
+### Added
+
+- ADR-001 (command and context model) and ADR-002 (human-owned core and
+  prediction loop).
+- Human-Owned Core prediction loop: `explain-60-40` gates `/dev` via
+  `spec-conformance-check.sh pre-execute`; `session-reflection` Q9 audits
+  prediction accuracy; reconstruction drill triggers only on divergence.
+- Three-layer `/review`: `spec-conformance` (Layer 1) → `red-team` (Layer 2,
+  reviewer agent) → `critique-dialogue` (Layer 3). `needs-user-decision`
+  capped at 2 per run.
+- `BRIEF.md`, `REVIEW_INPUT.md` templates; rewritten `REVIEW.md` template.
+
+### Removed
+
+- v2 skills: `orchestrator`, `execute-plan`, `write-plan`, `release-checklist`,
+  `pipeline-gate`, `decide`, `postmortem`, `learn`, `code-review`,
+  `security-scan`, `root-cause`, `codebase-scan`, `git-worktree`, `wireframe`,
+  `saas-pricing`, `changelog-launch-post`, `success-metric`, `requirements`,
+  `design-doc`, `adr`, `test-verify`, `weekly-ship`, `git-ops`.
+- v2 commands: `/ship`, `/ship-weekly`.
+- v2 agents: `debugger` (folded into `/debug` skill chain via
+  `debug-hypotheses` + `debug-validate` + `tdd`).
+- v2 concepts: task sizing (S/M/L), orchestrator routing, pipeline waves,
+  pattern/learn memory index.
+
+## [2.0.0-unreleased] — v2 skills-first redesign (superseded by 3.0.0)
+
 ### Changed — BREAKING: v2 skills-first redesign
 
 Company of One v2 replaces the agent-centric v1 model with a skills-centric one.
