@@ -1,44 +1,57 @@
 # Company of One — Project Instructions
 
 This project is a Claude Code / Codex plugin called **Claude 一人公司 (Company of One)**.
-It gives solo developers **institutions instead of teammates** — rituals, skills, and two
-focused agents that replace what fake coworker agents used to pretend to do.
+It gives solo developers **institutions instead of teammates** — rituals, skills, and one
+focused agent that replace what fake coworker agents used to pretend to do.
 
 Philosophy: **用制度取代隊友** ("institutions over teammates"). Skills are cheap and
 lazy-loaded; agents are expensive — so agents are the exception, not the default.
 
-## Architecture (v2)
+## Architecture (v3)
 
-- **2 agents**: `reviewer` (fresh eyes for code review), `debugger` (isolated root cause analysis)
-- **3 commands**: `/ship` (sizes Small/Medium/Large), `/debug`, `/ship-weekly`
-- **~25 skills**: `orchestrator` + domain skills (engineering, institutional, business-bridge)
-- **Orchestrator**: routes through skill chains; spawns at most one agent per pipeline
+- **1 agent**: `reviewer` (fresh-context adversarial review, used only by `/review`)
+- **4 commands**: `/think <topic>`, `/dev <feature>`, `/review <target>`, `/debug <problem>` — all require a parameter; no smart routing
+- **17 skills**: `read-brief`, `write-brief`, `research`, `clarify`, `spec-writing`, `adr-writing`, `explain-60-40`, `tdd`, `test-plan`, `verify`, `red-team`, `critique-dialogue`, `spec-conformance`, `update-docs`, `session-reflection`, `debug-hypotheses`, `debug-validate`
+- **Context contract**: `MEMORY.md` → `read-brief` → `BRIEF.md` → skills. Skills never read MEMORY directly.
+- **Deterministic scripts** replace the v2 pipeline state machine (see `hooks/scripts/`)
+
+See `docs/projects/claude-company-of-one/adr/001-v3-command-and-context-model.md` and
+`docs/projects/claude-company-of-one/adr/002-human-owned-core-and-prediction-loop.md`
+for the accepted v3 architecture.
 
 ## Plugin Structure
 
 ```
 .claude-plugin/          → Claude Code plugin manifest
-agents/                  → Agent definitions
-commands/                → Slash commands
+agents/                  → Agent definitions (reviewer only)
+commands/                → Slash commands (/think, /dev, /review, /debug)
 skills/                  → Skills with SKILL.md (each skill references its template)
-hooks/                   → Hook scripts
-templates/               → Document templates (referenced by skills, not standalone)
+hooks/                   → Hook scripts (brief / docs / diff / review-input / spec-conformance)
+templates/               → Document templates: BRIEF.md, REVIEW_INPUT.md, REVIEW.md, etc.
 ```
 
 ## Conventions
 
 - Plugin content is all English
-- Pipeline briefs/specs go to `${COMPANY_OF_ONE_PLUGIN_DATA}/projects/{key}/` — never to the project repo
-- Only ADRs go to `docs/adr/` in the project repo (git-tracked)
-- Commit messages follow conventional commits: `feat(scope):`, `fix(scope):`, `refactor(scope):`
+- Working briefs (`BRIEF.md`) go to `${COMPANY_OF_ONE_PLUGIN_DATA}/projects/{key}/` — never to the project repo
+- Specs (REQUIREMENTS / DESIGN / TODO / REVIEW / TEST) and ADRs go to `docs/projects/<project>/` in the monorepo (git-tracked)
+- Commit messages follow conventional commits: `feat(scope):`, `fix(scope):`, `refactor(scope):`, `docs(scope):`
 - CHANGELOG follows Keep a Changelog format
 - Hook scripts use `hooks/scripts/lib/common.sh` for cross-platform path resolution
 
-## Task Sizing
+## Command Invariants
 
-- **Small**: single file, clear, <2 min → just do it, no docs
-- **Medium**: 2-5 files, 5-15 min → inline plan, feature branch
-- **Large**: cross-module, >15 min → full pipeline with specs directory
+Every command follows the same outer shape (ADR-001 D7):
+
+- **Pre**: `read-brief` once (loads REQUIREMENTS / DESIGN / TODO / MEMORY → `BRIEF.md`)
+- **Mid**: skills read only the brief, never re-read source docs or MEMORY
+- **Post**: `update-docs` (writes CHANGELOG + TODO once) + command-specific reflection:
+  - `/dev` → `session-reflection` (9 questions, incl. Q9 prediction accuracy)
+  - `/review` → `REVIEW.md` Critique Dialogue (no session-reflection)
+  - `/debug` → `debug-summarize` (no session-reflection)
+  - `/think` → no reflection artifact; the written docs are the deliverable
+
+Commands fail fast when their parameter is missing. No inference, no routing.
 
 ## Code Style
 
@@ -51,11 +64,13 @@ templates/               → Document templates (referenced by skills, not stand
 
 ## Do NOT
 
-- Write standalone docs for Small/Medium tasks
-- Start pipelines for simple questions
-- Use Large pipeline for Small tasks
-- Reintroduce demoted agents (product-owner, architect, developer, qa, devops, ui-designer)
-  without a written justification — v2 removed them deliberately for token and context reasons
+- Add a task-sizing layer (S/M/L) back into any command. v3 removed it deliberately.
+- Let skills read `MEMORY.md` directly — only `read-brief` may load MEMORY into the brief.
+- Auto-escalate `/think` to the reviewer agent. Adversarial spec review is invoked
+  explicitly via `/review <topic>`.
+- Reintroduce demoted agents (product-owner, architect, developer, qa, devops, ui-designer,
+  debugger) without a written ADR justifying it.
+- Revive `orchestrator`, `ship`, `execute-plan`, or pipeline-state / wave vocabulary.
 
 ## Recommended Companion Plugins
 
