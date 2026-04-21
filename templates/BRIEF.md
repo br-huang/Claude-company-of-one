@@ -18,6 +18,27 @@
 - TODO: {path or "N/A"}
 - ADRs referenced: {list of ADR paths}
 
+### Requirements Summary
+
+<!-- Filled by read-brief. Downstream skills use this instead of re-reading REQUIREMENTS.md. -->
+
+- REQ-1: {testable requirement}
+  - Acceptance: {observable acceptance criterion}
+
+### Design Summary
+
+<!-- Filled by read-brief. Downstream skills use this instead of re-reading DESIGN.md. -->
+
+- Approach: {implementation approach in 3-7 bullets}
+- Non-goals: {explicit boundaries}
+- Risk boundaries: {security, data, migration, or operational boundaries}
+
+### TODO In Scope
+
+<!-- Filled by read-brief from TODO.md. Only include items relevant to this run. -->
+
+- [ ] {TODO item}
+
 ## Relevant Memory
 
 <!-- One bullet per MEMORY item classified `used`. See ADR-001 D3. -->

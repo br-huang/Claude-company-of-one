@@ -1,61 +1,63 @@
 ---
 name: tdd
-description: 'Test-driven development cycle: RED -> GREEN -> REFACTOR. Use for every code change — no exceptions.'
+description: 'Test-driven development cycle: RED → GREEN → REFACTOR. Every code change goes through it, including /debug regression tests.'
 ---
 
-# Test-Driven Development
+# tdd
 
-Every code change follows the TDD cycle. No exceptions.
+## Purpose
 
-## The Cycle
+Default execution loop for any code change in `/dev` and `/debug`. RED → GREEN →
+REFACTOR, one behavior at a time. Produces tests that actually describe behavior
+rather than lock in an implementation.
 
-### RED — Write a Failing Test
+## Inputs
 
-1. Write a test that describes the expected behavior.
-2. Run it. Watch it fail.
-3. **Verify it fails for the RIGHT reason.** A test that fails because of a syntax error is not a valid RED. The test must fail because the behavior does not yet exist.
+- `BRIEF.md` `## Current Contract` (what needs to work) and, for `/dev`, the
+  `test-plan` output (what to cover).
+- For `/debug`, `### Root Cause` from `debug-validate` — the regression test
+  exercises the exact reproduction.
 
-### GREEN — Make It Pass
+## Outputs
 
-1. Write the **MINIMUM** code to make the test pass.
-2. Resist the urge to write more. Do not generalize. Do not optimize. Do not clean up.
-3. Run the test. It must pass.
+- New test file(s) added / modified, each corresponding to one behavior. `tdd`
+  does not commit by itself; command/repo policy decides whether the Main Agent
+  commits after docs update.
+- Production code delivering the minimum to make each new test pass.
+- Refactored code after green, tests still passing.
 
-### REFACTOR — Clean Up
+## Procedure
 
-1. With the test green, improve the code.
-2. Improve names, reduce duplication, simplify structure.
-3. Run the test after every change. It must stay green.
-4. Do not add new behavior during refactor — that requires a new RED.
+### RED
 
-## Rules
+1. Write a test for ONE behavior. Name it `should X when Y`.
+2. Use Arrange-Act-Assert layout.
+3. Run it. Watch it fail. Confirm the failure message names the missing behavior,
+   not a syntax error.
 
-- **If you wrote code before the test, delete it. Start over.** The test comes first. Always.
-- **Never skip RED.** Watching the test fail proves it tests the right thing. A test you have never seen fail is a test you cannot trust.
-- **One behavior per test.** If a test name has "and" in it, split it into two tests.
-- **Test names describe behavior.** Use the pattern: "should X when Y" (e.g., "should return 404 when user not found").
-- **Arrange-Act-Assert structure.** Every test has three sections:
-  - **Arrange** — Set up the preconditions.
-  - **Act** — Perform the action being tested.
-  - **Assert** — Verify the expected outcome.
+### GREEN
 
-## What to Test
+1. Write the minimum code to make that test pass. No generalization, no unrelated
+   cleanup.
+2. Run the test. It passes.
 
-- Happy path (expected inputs → expected outputs)
-- Edge cases (empty, null, boundary values, max size)
-- Error paths (invalid inputs → appropriate errors)
-- Integration points (API calls, database queries, file I/O)
+### REFACTOR
 
-## What NOT to Test
+1. Improve names, remove duplication, simplify. Do NOT add new behavior.
+2. Run tests after each edit. Keep the bar green.
 
-- Private implementation details (test through the public API)
-- Third-party library internals
-- Trivial getters/setters with no logic
-- Framework boilerplate
+Repeat until the test plan (or, for `/debug`, the regression test) is complete.
 
-## Mocking
+## Failure modes
 
-- Mock external services (APIs, databases, file systems)
-- Do NOT mock internal logic — test the real code
-- Prefer fakes over mocks when possible (in-memory DB > mock DB)
-- Keep mocks minimal — only mock what you must
+- Code written before the test → delete the code, write the test first. No exceptions.
+- Test passes on the first run (skipped RED) → the test is not exercising the change;
+  rewrite it to fail first.
+- Test name contains `and` → split into two tests.
+- More than ~10 tests for one feature → feature is too big; route back to `spec-writing`.
+
+## Does not do
+
+- Does not decide which tests to write (that is `test-plan`).
+- Does not run the final verification sweep (that is `verify`).
+- Does not mock internal logic; mock only external services.
