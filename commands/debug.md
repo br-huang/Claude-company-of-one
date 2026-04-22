@@ -21,7 +21,9 @@ If `<problem>` is missing, print the example above and exit.
 
 1. **read-brief** — `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" init debug "<problem>"`. Fold in the
    reproducer, error output, and the active spec (if any) so mid-step skills
-   read only the brief.
+   read only the brief. Run
+   `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" check-budget`
+   before hypothesis work.
 
 ### Mid
 

@@ -31,6 +31,7 @@ If `<target>` is missing, print the example above and exit.
    Do not infer missing `spec_dir`, `base_ref`, or `review_mode` from chat context.
 
 2. **read-brief** — load the brief for the resolved target spec so Main Agent has context.
+   Run `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" check-budget`.
    The brief is NOT passed to the reviewer agent.
 3. Generate or refresh `REVIEW_INPUT.md`:
    `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/review-input.sh" generate <spec_dir> <base_ref>`.

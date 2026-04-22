@@ -20,8 +20,10 @@ If `<feature>` is missing, print the example above and exit. No inference, no ro
 ### Pre
 
 1. **read-brief** — `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" init dev "<feature>"`,
-   then classify MEMORY per ADR-001 D3. The brief folds in
-   REQUIREMENTS / DESIGN / TODO so mid-step skills never re-read source docs.
+   then classify MEMORY per ADR-001 D3 and run
+   `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" check-budget`.
+   The brief compiles REQUIREMENTS / DESIGN / TODO into a bounded runtime
+   contract so mid-step skills never re-read source docs.
 
 ### Mid (in strict order)
 

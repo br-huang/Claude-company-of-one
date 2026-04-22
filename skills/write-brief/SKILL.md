@@ -16,7 +16,7 @@ so later skills in the chain see the same source of truth (ADR-001 D2).
 - The current brief at `${COMPANY_OF_ONE_PLUGIN_DATA}/projects/<key>/briefs/current.md`.
 - A target section name (`Open Questions`, `Assumptions`, `Current Contract`,
   `Human-Owned Core`, etc.).
-- The content to append or replace under that section.
+- The content to replace under that section.
 
 ## Outputs
 
@@ -27,14 +27,18 @@ so later skills in the chain see the same source of truth (ADR-001 D2).
 1. Get brief path via `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" path`.
 2. Read the file with Read.
 3. Locate the target `##` heading. Preserve all other sections verbatim.
-4. Apply the update via the Edit tool. Prefer append; replace only when explicitly instructed.
-5. Never remove a section; empty a section by replacing with a single `-` bullet if needed.
+4. Apply the update via the Edit tool by replacing that section's body. Append
+   only for short list sections where the new entry is not already represented.
+5. Never paste raw diffs, full test logs, terminal transcripts, or copied source docs.
+6. Never remove a section; empty a section by replacing with a single `-` bullet if needed.
+7. Run `bash "${COMPANY_OF_ONE_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:?Set COMPANY_OF_ONE_PLUGIN_ROOT to the plugin root}}}/hooks/scripts/lib/brief-manager.sh" check-budget`.
 
 ## Failure modes
 
 - Brief not found → the calling command never ran `read-brief`. Stop and report.
 - Target section not present in the brief → template drift; stop rather than invent a section.
 - Would modify `## Relevant Memory` or `## Ignored Memory` → refuse; only `read-brief` writes those.
+- `check-budget` fails → shrink or summarize the updated section before continuing.
 
 ## Does not do
 

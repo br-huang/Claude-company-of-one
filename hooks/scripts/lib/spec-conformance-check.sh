@@ -13,6 +13,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/common.sh"
 # shellcheck source=hooks/scripts/lib/docs-check.sh
 . "$SCRIPT_DIR/docs-check.sh"
+# shellcheck source=hooks/scripts/lib/brief-manager.sh
+. "$SCRIPT_DIR/brief-manager.sh"
 
 _fail=0
 _err() { echo "FAIL: $*" >&2; _fail=1; }
@@ -143,6 +145,7 @@ check_ignored_memory_declared() {
 spec_conformance_pre_execute() {
   # Checks before /dev Execute step.
   check_brief_present
+  brief_check_budget || _fail=1
   check_ignored_memory_declared
   check_human_owned_core_filled
   echo "== result =="

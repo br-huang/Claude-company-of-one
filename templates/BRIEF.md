@@ -1,7 +1,18 @@
 # BRIEF: {feature or topic}
 
-> Single source of truth for the current command run. Skills read only this file.
-> Managed by `read-brief` (load) and `write-brief` (update). See ADR-001 D1/D2.
+> Generated runtime cache for the current command run. Specs remain the durable
+> source of truth; this file only carries the compact contract skills need now.
+> Managed by `read-brief` (compile) and `write-brief` (section update). See
+> ADR-001 D1/D2.
+
+## Brief Budget
+
+- Max 220 lines.
+- No raw diffs, full test logs, terminal transcripts, or copied source docs.
+- Summaries are bounded: one bullet per REQ, 3-7 design bullets, max 10 memory
+  bullets per memory section.
+- Large evidence stays in referenced files; this brief stores the decision or
+  one-line summary only.
 
 ## Feature
 
@@ -17,6 +28,7 @@
 - DESIGN: {path or "N/A"}
 - TODO: {path or "N/A"}
 - ADRs referenced: {list of ADR paths}
+- Source fingerprints: {short hashes or "not recorded"}
 
 ### Requirements Summary
 

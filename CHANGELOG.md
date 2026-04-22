@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.2] — 2026-04-22
+
+### Fixed
+
+- Bound `BRIEF.md` as a generated runtime cache instead of a growing notebook.
+- Added `brief-manager.sh check-budget` to fail oversized, placeholder-filled,
+  or raw-evidence-heavy briefs before execution.
+
 ## [3.0.1] — 2026-04-22
 
 ### Fixed
